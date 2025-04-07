@@ -16,6 +16,7 @@ import routers.productos
 import routers.inventarios
 import routers.transacciones
 import routers.detalle_transaccion
+import routers.usuarios
 
 env = Settings()
 
@@ -33,6 +34,7 @@ app.include_router(routers.productos.router)
 app.include_router(routers.inventarios.router)
 app.include_router(routers.transacciones.router)
 app.include_router(routers.detalle_transaccion.router)
+app.include_router(routers.usuarios.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

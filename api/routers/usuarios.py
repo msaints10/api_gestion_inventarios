@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+import re
+
+from fastapi import APIRouter, HTTPException
 from models.usuarios import Usuarios
 
 router = APIRouter(
@@ -17,7 +19,14 @@ async def obtener_usuario(id_usuario: int):
     return usuarios.obtener(id_usuario)
 
 @router.post("/")
-async def registrar_usuario(nombre: str, email: str, password: str):
+async def registrar_usuario(nombre: str, email: str, password: str, password_confirm: str):
+    if password != password_confirm:
+        raise HTTPException(status_code=400, detail="Las contraseñas no coinciden")
+    
+    # validar email por expresion regular
+    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+        raise HTTPException(status_code=400, detail="Email no válido")
+    
     usuarios = Usuarios()
     return usuarios.registrar(nombre, email, password)
 
@@ -27,7 +36,10 @@ async def actualizar_usuario(id_usuario: int, nombre: str, email: str):
     return usuarios.actualizar(id_usuario, nombre, email)
 
 @router.put("/{id_usuario}/password")
-async def actualizar_password(id_usuario: int, password: str):
+async def actualizar_password(id_usuario: int, password: str, password_confirm: str):
+    if password != password_confirm:
+        raise HTTPException(status_code=400, detail="Las contraseñas no coinciden")
+    
     usuarios = Usuarios()
     return usuarios.actualizar_password(id_usuario, password)
 
