@@ -13,8 +13,8 @@ async def inventario_por_almacen(id_almacen: int):
     return Reportes().inventario_por_almacen(id_almacen)
 
 @router.get("/productos-stock-bajo")
-async def productos_stock_bajo():
-    return Reportes().productos_stock_bajo()
+async def productos_stock_bajo(stock_minimo: int = 0):
+    return Reportes().productos_stock_bajo(stock_minimo)
 
 @router.get("/transacciones-por-fecha")
 async def transacciones_por_fecha(fecha_inicio: str, fecha_fin: str):

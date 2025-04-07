@@ -10,9 +10,9 @@ class Reportes:
         except Exception as e:
             raise Exception(f"Error al generar reporte de inventario por almacén: {str(e)}")
 
-    def productos_stock_bajo(self):
+    def productos_stock_bajo(self, stock_minimo: int = 0):
         try:
-            return self.db.call_procedure("Reporte_Productos_Stock_Bajo", [], expect_result=True)
+            return self.db.call_procedure("Reporte_Productos_Stock_Bajo", [stock_minimo], expect_result=True)
         except Exception as e:
             raise Exception(f"Error al generar reporte de productos con stock bajo: {str(e)}")
 

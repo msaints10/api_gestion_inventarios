@@ -33,7 +33,6 @@ async def actualizarproductos_historialtransaccion(_id: int, productos: list):
         {"$push": {"productos": {"$each": productos}}}
     )
     return result.modified_count
-    
 
 async def guardar_modificacion_producto(data: HistorialModificacionProducto):
     await historial_modificacion_productos.insert_one(data.model_dump(by_alias=True, exclude=["id"]))

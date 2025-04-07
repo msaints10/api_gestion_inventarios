@@ -1,6 +1,9 @@
+from datetime import datetime
+
 from fastapi import APIRouter, Depends
 from models.productos import Productos
-
+from schemas.MongoSchemas import HistorialModificacionProducto
+from services.mongo_logger import guardar_modificacion_producto
 from utils.jwt_current_user import get_current_user
 
 router = APIRouter(
@@ -53,7 +56,43 @@ async def actualizar_producto(
     Actualizar un producto existente
     """
     productos = Productos()
-    return productos.actualizar_producto(id_producto, codigo, nombre, descripcion, precio_unitario, stock_total)
+    upd_producto = productos.actualizar_producto(id_producto, codigo, nombre, descripcion, precio_unitario, stock_total)
+
+    if upd_producto["estatus"] == "success":
+        data = HistorialModificacionProducto(
+            id_producto=id_producto,
+            usuario_responsable=current_user[0]["id_usuario"],
+            fecha_modificacion=datetime.now(),
+            cambios=[                
+                {
+                    "campo": "codigo",
+                    "nuevo_valor": codigo
+                },
+                {
+                    "campo": "nombre",
+                    "nuevo_valor": nombre
+                },
+                {
+                    "campo": "descripcion",
+                    "nuevo_valor": descripcion
+                },
+                {
+                    "campo": "precio_unitario",
+                    "nuevo_valor": precio_unitario
+                },
+                {
+                    "campo": "stock_total",
+                    "nuevo_valor": stock_total
+                }
+            ]
+        )
+        save_producto = await guardar_modificacion_producto(data)
+        
+        if save_producto:
+            upd_producto["historial"] = save_producto
+        
+    
+    return upd_producto
 
 @router.delete("/{id_producto}")
 async def eliminar_producto(id_producto: int, current_user: str = Depends(get_current_user)):
