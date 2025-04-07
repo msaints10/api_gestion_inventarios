@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends
 from models.transacciones import Transacciones
 from schemas.MongoSchemas import HistorialTransaccion
-from services.mongo_logger import guardar_historial_transaccion
+from services.mongo_logger import guardar_historial_transaccion, obtener_historialtransacciones
 from utils.jwt_current_user import get_current_user
 from models.estados_transaccion import EstadosTransaccion
 from models.tipos_transaccion import TiposTransaccion
@@ -87,3 +87,10 @@ async def actualizar_transaccion(
 async def eliminar_transaccion(id_transaccion: int, current_user: str = Depends(get_current_user)):
     transacciones = Transacciones()
     return transacciones.eliminar(id_transaccion)
+
+@router.get("/historial-transacciones")
+async def obtener_historial_transacciones(current_user: str = Depends(get_current_user)):
+    """
+    Obtener el historial de transacciones
+    """
+    return await obtener_historialtransacciones()

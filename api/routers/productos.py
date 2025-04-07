@@ -2,8 +2,12 @@ from datetime import datetime
 
 from fastapi import APIRouter, Depends
 from models.productos import Productos
-from schemas.MongoSchemas import HistorialModificacionProducto
-from services.mongo_logger import guardar_modificacion_producto
+from schemas.MongoSchemas import HistorialModificacionProducto, ComentarioProducto
+from services.mongo_logger import (guardar_modificacion_producto,
+                                   obtener_historial_comentarios_producto,
+                                   obtener_historial_modificacion_producto,
+                                   obtener_historial_modificacion_productos,
+                                   guardar_comentario_producto)
 from utils.jwt_current_user import get_current_user
 
 router = APIRouter(
@@ -101,3 +105,43 @@ async def eliminar_producto(id_producto: int, current_user: str = Depends(get_cu
     """
     productos = Productos()
     return productos.eliminar_producto(id_producto)
+
+
+@router.get("/historial-modificacion/{id_producto}")
+async def obtener_historial_modificacionxproducto(id_producto: int, current_user: str = Depends(get_current_user)):
+    """
+    Obtener el historial de modificaciones de un producto por su ID
+    """
+    return await obtener_historial_modificacion_producto(id_producto)
+
+@router.get("/historial-modificaciones")
+async def obtener_historial_modificacionxproductos(current_user: str = Depends(get_current_user)):
+    """
+    Obtener el historial de modificaciones de todos los productos
+    """
+    return await obtener_historial_modificacion_productos()
+
+@router.post("/guardar_comentario_producto")
+async def guardar_comentarioxproducto(
+    id_producto: int,
+    comentario: str,
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Guardar un comentario sobre un producto
+    """
+    data = ComentarioProducto(
+        id_producto=id_producto,
+        usuario_id=current_user[0]["id_usuario"],
+        fecha_comentario=datetime.now(),
+        comentario=comentario
+    )
+    
+    return await guardar_comentario_producto(data)
+
+@router.get("/historial-comentarios/{id_producto}")
+async def obtener_historial_comentariosxproducto(id_producto: int, current_user: str = Depends(get_current_user)):
+    """
+    Obtener el historial de comentarios de un producto por su ID
+    """
+    return await obtener_historial_comentarios_producto(id_producto)

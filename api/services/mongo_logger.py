@@ -34,9 +34,38 @@ async def actualizarproductos_historialtransaccion(_id: int, productos: list):
     )
     return result.modified_count
 
+async def obtener_historialtransacciones():
+    historial = []
+    async for doc in historial_transacciones.find():
+        doc["_id"] = str(doc["_id"])
+        historial.append(doc)
+    return historial
+
 async def guardar_modificacion_producto(data: HistorialModificacionProducto):
     await historial_modificacion_productos.insert_one(data.model_dump(by_alias=True, exclude=["id"]))
+    
+async def obtener_historial_modificacion_producto(id_producto: int):
+    historial = await historial_modificacion_productos.find_one({"id_producto": id_producto})
+    
+    if historial:
+        historial["_id"] = str(historial["_id"])
+    
+    return historial
+
+async def obtener_historial_modificacion_productos():
+    historial = []
+    async for doc in historial_modificacion_productos.find().sort("fecha", -1):
+        doc["_id"] = str(doc["_id"])
+        historial.append(doc)
+    return historial
 
 
 async def guardar_comentario_producto(data: ComentarioProducto):
     await historial_comentarios_productos.insert_one(data.model_dump(by_alias=True, exclude=["id"]))
+    
+async def obtener_historial_comentarios_producto(id_producto: int):
+    historial = []
+    async for doc in historial_comentarios_productos.find({"id_producto": id_producto}):
+        doc["_id"] = str(doc["_id"])
+        historial.append(doc)
+    return historial
