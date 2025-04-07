@@ -1,5 +1,6 @@
 DELIMITER $$
-CREATE PROCEDURE registrar_transaccion(
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `registrar_transaccion`(
     IN p_id_tipo_transaccion INT,
     IN p_usuario_responsable INT,
     IN p_id_almacen_origen INT,
@@ -29,5 +30,9 @@ BEGIN
         p_nota,
         SYSDATE()
     );
-END $$
+
+    -- Devolver el ID recién insertado
+    SELECT LAST_INSERT_ID() AS id_transaccion;
+END$$
+
 DELIMITER ;

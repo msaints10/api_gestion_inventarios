@@ -6,11 +6,13 @@ class Transacciones:
 
     def registrar(self, id_tipo_transaccion: int, usuario_responsable: int, id_almacen_origen: int, id_almacen_destino: int, total_transaccion: float, id_estado_transaccion: int, nota: str):
         try:
-            self.db.call_procedure(
+            registro = self.db.call_procedure(
                 "registrar_transaccion",
-                [id_tipo_transaccion, usuario_responsable, id_almacen_origen, id_almacen_destino, total_transaccion, id_estado_transaccion, nota]
+                [id_tipo_transaccion, usuario_responsable, id_almacen_origen, id_almacen_destino, total_transaccion, id_estado_transaccion, nota],
+                True,
+                True
             )
-            return {"mensaje": "Transacción registrada correctamente", "estatus": "success"}
+            return {"mensaje": "Transacción registrada correctamente", "estatus": "success", "registro": registro}
         except Exception as e:
             raise Exception(f"Error al registrar transacción: {str(e)}")
 

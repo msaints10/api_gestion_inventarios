@@ -89,6 +89,13 @@ python utils/create_jwt_secret_key.py
 
 Edita tu `.env` basado en `.env_example`.
 
+
+### 5. Seed usuario admin
+
+```bash
+python -m seeders.seed_usuario_admin
+```
+
 ---
 
 ## ▶️ Ejecución del proyecto

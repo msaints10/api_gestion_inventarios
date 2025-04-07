@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from models.productos import Productos
+
+from utils.jwt_current_user import get_current_user
 
 router = APIRouter(
     prefix="/productos",
@@ -7,7 +9,7 @@ router = APIRouter(
 )
 
 @router.get("/")
-async def obtener_productos():
+async def obtener_productos(current_user: str = Depends(get_current_user)):
     """
     Obtener todos los productos
     """
@@ -15,7 +17,7 @@ async def obtener_productos():
     return productos.obtener_productos()
 
 @router.get("/{id_producto}")
-async def obtener_producto(id_producto: int):
+async def obtener_producto(id_producto: int, current_user: str = Depends(get_current_user)):
     """
     Obtener un producto por su ID
     """
@@ -28,7 +30,8 @@ async def registrar_producto(
     nombre: str,
     descripcion: str,
     precio_unitario: float,
-    stock_total: int
+    stock_total: int,
+    current_user: str = Depends(get_current_user)
 ):
     """
     Registrar un nuevo producto
@@ -43,7 +46,8 @@ async def actualizar_producto(
     nombre: str,
     descripcion: str,
     precio_unitario: float,
-    stock_total: int
+    stock_total: int,
+    current_user: str = Depends(get_current_user)
 ):
     """
     Actualizar un producto existente
@@ -52,7 +56,7 @@ async def actualizar_producto(
     return productos.actualizar_producto(id_producto, codigo, nombre, descripcion, precio_unitario, stock_total)
 
 @router.delete("/{id_producto}")
-async def eliminar_producto(id_producto: int):
+async def eliminar_producto(id_producto: int, current_user: str = Depends(get_current_user)):
     """
     Eliminar un producto por su ID
     """

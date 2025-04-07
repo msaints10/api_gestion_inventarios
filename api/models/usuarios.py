@@ -50,3 +50,9 @@ class Usuarios:
             return self.db.call_procedure("obtener_usuarios", [activo], True)
         except Exception as e:
             raise Exception(f"Error al obtener usuarios: {str(e)}")
+        
+    def obtener_por_nombre_usuario(self, nombre_usuario: str):
+        try:
+            return self.db.call_procedure("obtener_usuario_por_nombre", [nombre_usuario], True)
+        except Exception as e:
+            raise Exception(f"Error al obtener usuario por nombre: {str(e)}")

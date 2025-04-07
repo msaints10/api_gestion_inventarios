@@ -17,6 +17,9 @@ import routers.inventarios
 import routers.transacciones
 import routers.detalle_transaccion
 import routers.usuarios
+import routers.usuarios_roles
+import routers.auth
+import routers.reportes
 
 env = Settings()
 
@@ -26,7 +29,10 @@ app = FastAPI(
     description="API para la gestión de inventarios",
 )
 
+app.include_router(routers.auth.router)
+app.include_router(routers.usuarios.router)
 app.include_router(routers.roles.router)
+app.include_router(routers.usuarios_roles.router)
 app.include_router(routers.almacenes.router)
 app.include_router(routers.tipos_transaccion.router)
 app.include_router(routers.estados_transaccion.router)
@@ -34,7 +40,7 @@ app.include_router(routers.productos.router)
 app.include_router(routers.inventarios.router)
 app.include_router(routers.transacciones.router)
 app.include_router(routers.detalle_transaccion.router)
-app.include_router(routers.usuarios.router)
+app.include_router(routers.reportes.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

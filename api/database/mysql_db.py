@@ -112,7 +112,7 @@ class MysqlDB:
             cursor.close()
             self.disconnect()
             
-    def call_procedure(self, procedure_name: str, params: list = None, expect_result: bool = False):
+    def call_procedure(self, procedure_name: str, params: list = None, expect_result: bool = False, comitear: bool = False):
         """
         Ejecuta un procedimiento almacenado.
 
@@ -133,6 +133,8 @@ class MysqlDB:
                 result = []
                 for res in cursor.stored_results():
                     result.extend(res.fetchall())
+                if comitear:
+                    self.commit()
                 return self.convert_retvaldate_tostr(result)
             self.commit()
         except Error as err:
